@@ -15,14 +15,12 @@ public class LoggingDecorator<TRequest, TResponse>(
 
         if (result.IsFailure)
         {
-            logger.LogWarning("Finished request '{@Request}' with errors '{@ErrorMessages}'",
-                request, result.ErrorMessages);
+            logger.LogWarning("Finished request with errors '{@ErrorMessages}'", result.ErrorMessages);
 
             return result;
         }
 
-        logger.LogInformation("Finished request '{@Request}' with result '{@Result}'",
-            request, result.Data);
+        logger.LogInformation("Finished request with result '{@Result}'", result.Data);
 
         return result;
     }
@@ -40,13 +38,12 @@ public class LoggingDecorator<TRequest>(
 
         if (result.IsFailure)
         {
-            logger.LogWarning("Finished request '{@Request}' with errors '{@ErrorMessage}'",
-                request, result.ErrorMessages);
+            logger.LogWarning("Finished request with errors '{@ErrorMessage}'", result.ErrorMessages);
 
             return result;
         }
 
-        logger.LogInformation("Finished request '{@Request}' with success'", request);
+        logger.LogInformation("Finished request with success'");
 
         return result;
     }

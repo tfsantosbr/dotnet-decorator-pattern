@@ -7,17 +7,12 @@ namespace DecoratorPattern.API.Application.Common.Decorators;
 public class ValidationDecorator<TCommand, TResponse>(
     ICommandHandler<TCommand, TResponse> next,
     ILogger<LoggingDecorator<TCommand, TResponse>> logger,
-    IValidator<TCommand>? validator = default)
+    IValidator<TCommand> validator)
     : HandlerDecorator<TCommand, TResponse>(next) where TCommand : ICommand<TResponse>
 {
     public override Result<TResponse> Handle(TCommand command)
     {
         logger.LogInformation("Validating request data.");
-
-        if (validator is null)
-        {
-            return base.Handle(command);
-        }
 
         var validationResult = validator.Validate(command);
 
@@ -35,17 +30,12 @@ public class ValidationDecorator<TCommand, TResponse>(
 public class ValidationDecorator<TCommand>(
     ICommandHandler<TCommand> next,
     ILogger<LoggingDecorator<TCommand>> logger,
-    IValidator<TCommand>? validator = default)
+    IValidator<TCommand> validator)
     : HandlerDecorator<TCommand>(next) where TCommand : ICommand
 {
     public override Result Handle(TCommand command)
     {
         logger.LogInformation("Validating request data");
-
-        if (validator is null)
-        {
-            return base.Handle(command);
-        }
 
         var validationResult = validator.Validate(command);
 
