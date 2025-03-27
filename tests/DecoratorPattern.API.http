@@ -1,6 +1,43 @@
 @hostUrl = http://localhost:5194
 
-GET {{hostUrl}}/weatherforecast/
-Accept: application/json
+### Create User
+POST {{hostUrl}}/users
+Content-Type: application/json
 
-###
+{ 
+    "name": "John Doe", 
+    "email": "jhon@email.com" 
+}
+
+### Create User (with validation errors)
+POST {{hostUrl}}/users
+Content-Type: application/json
+
+{ 
+    "name": null, 
+    "email": "jhon" 
+}
+
+### Update User
+PUT {{hostUrl}}/users/0195d618-af47-7731-bbf3-1fb332c5721f
+Content-Type: application/json
+
+{ 
+    "name": "John Updated", 
+    "email": "updated@email.com" 
+}
+
+### Update User (with validation errors)
+PUT {{hostUrl}}/users/0195d618-af47-7731-bbf3-1fb332c5721f
+Content-Type: application/json
+
+{ 
+    "name": null, 
+    "email": "updated" 
+}
+
+### Remove User
+DELETE {{hostUrl}}/users/0195d618-af47-7731-bbf3-1fb332c5721f
+
+### Remove User (not found user)
+DELETE {{hostUrl}}/users/0195d618-af47-7731-bbf3-1fb332c57211

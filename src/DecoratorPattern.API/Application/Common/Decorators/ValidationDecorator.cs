@@ -12,7 +12,7 @@ public class ValidationDecorator<TCommand, TResponse>(
 {
     public override Result<TResponse> Handle(TCommand command)
     {
-        logger.LogInformation("Validating command");
+        logger.LogInformation("Validating request data.");
 
         if (validator is null)
         {
@@ -23,7 +23,7 @@ public class ValidationDecorator<TCommand, TResponse>(
 
         if (!validationResult.IsValid)
         {
-            logger.LogWarning("Command is not valid.");
+            logger.LogWarning("The are validation errors in request data!");
 
             return Result<TResponse>.Failure([.. validationResult.Errors.Select(e => e.ErrorMessage)]);
         }
@@ -40,7 +40,7 @@ public class ValidationDecorator<TCommand>(
 {
     public override Result Handle(TCommand command)
     {
-        logger.LogInformation("Validating command");
+        logger.LogInformation("Validating request data");
 
         if (validator is null)
         {
@@ -51,7 +51,7 @@ public class ValidationDecorator<TCommand>(
 
         if (!validationResult.IsValid)
         {
-            logger.LogWarning("Command is not valid.");
+            logger.LogWarning("The are validation errors in request data!");
 
             return Result.Failure([.. validationResult.Errors.Select(e => e.ErrorMessage)]);
         }

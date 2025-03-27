@@ -7,8 +7,12 @@ namespace DecoratorPattern.API.Extensions;
 
 public static class ApplicationExtensions
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
+        // validator
+
+        services.AddValidatorsFromAssemblyContaining<CreateUserCommandResponse>();
+
         // add handlers
 
         services.AddScoped<CreateUserCommandHandler>();
@@ -16,11 +20,11 @@ public static class ApplicationExtensions
         {
             var handler = provider.GetRequiredService<CreateUserCommandHandler>();
             var logger = provider.GetRequiredService<ILogger<LoggingDecorator<CreateUserCommand, CreateUserCommandResponse>>>();
-            var loggingDecorator = new LoggingDecorator<CreateUserCommand, CreateUserCommandResponse>(handler, logger);
             var validator = provider.GetRequiredService<IValidator<CreateUserCommand>>();
-            var validationDecorator = new ValidationDecorator<CreateUserCommand, CreateUserCommandResponse>(loggingDecorator, logger, validator);
+            var validationDecorator = new ValidationDecorator<CreateUserCommand, CreateUserCommandResponse>(handler, logger, validator);
+            var loggingDecorator = new LoggingDecorator<CreateUserCommand, CreateUserCommandResponse>(validationDecorator, logger);
 
-            return validationDecorator;
+            return loggingDecorator;
         });
 
         services.AddScoped<UpdateUserCommandHandler>();
@@ -28,11 +32,22 @@ public static class ApplicationExtensions
         {
             var handler = provider.GetRequiredService<UpdateUserCommandHandler>();
             var logger = provider.GetRequiredService<ILogger<LoggingDecorator<UpdateUserCommand>>>();
-            var loggingDecorator = new LoggingDecorator<UpdateUserCommand>(handler, logger);
             var validator = provider.GetRequiredService<IValidator<UpdateUserCommand>>();
-            var validationDecorator = new ValidationDecorator<UpdateUserCommand>(loggingDecorator, logger, validator);
+            var validationDecorator = new ValidationDecorator<UpdateUserCommand>(handler, logger, validator);
+            var loggingDecorator = new LoggingDecorator<UpdateUserCommand>(validationDecorator, logger);
 
-            return validationDecorator;
+            return loggingDecorator;
+        });
+
+        services.AddScoped<RemoveUserCommandHandler>();
+        services.AddScoped<ICommandHandler<RemoveUserCommand>>(provider =>
+        {
+            var handler = provider.GetRequiredService<RemoveUserCommandHandler>();
+            var logger = provider.GetRequiredService<ILogger<LoggingDecorator<RemoveUserCommand>>>();
+            var validationDecorator = new ValidationDecorator<RemoveUserCommand>(handler, logger);
+            var loggingDecorator = new LoggingDecorator<RemoveUserCommand>(handler, logger);
+
+            return loggingDecorator;
         });
 
         return services;

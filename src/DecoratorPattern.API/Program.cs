@@ -1,15 +1,16 @@
-using DecoratorPattern.API.Application.Features.Users.Handlers;
-using FluentValidation;
+using DecoratorPattern.API.Endpoints;
+using DecoratorPattern.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandResponse>();
-
+builder.Services.AddApplicationServices();
+builder.Services.AddSerilogServices();
 
 var app = builder.Build();
 
 app.MapOpenApi();
 app.UseHttpsRedirection();
+app.MapUserEndpoints();
 
 app.Run();
